@@ -1,0 +1,30 @@
+.jumbotron {
+  padding: 2rem 1rem;
+  margin-bottom: 0;
+}
+
+.btn > pre {
+  margin: 0;
+  color: #fff;
+}
+
+section.buttons {
+  display: flex;
+  width: 75%;
+  margin: 0 auto;
+  justify-content: space-around;
+}
+
+.plot-area {
+  display: flex;
+  justify-content: center;
+}
+
+.plot-area .form-control {
+  display: inline;
+  width: auto;
+}
+
+.plot-area .btn {
+  margin: 0 1rem;
+}
