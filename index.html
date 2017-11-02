@@ -31,27 +31,32 @@
         </button>
       </div>
       <div class="plot-area">
-        <input type="number" class="form-control" placeholder="n = ...">
-        <button type="button" class="btn btn-dark">Plot!</button>
+        <form id="plot">
+          <input type="number" name="fn_input" class="form-control" placeholder="n = ...">
+          <button type="submit" id="plot" class="btn btn-dark">Plot!</button>
+        </form>
       </div>
     </section>
   </div>
   <div class="container">
-    <div class="col-6">
-      <pre>
-        <code class="js">
-          console.log("hello");
-        </code>
-      </pre>
-    </div>
-    <div class="col-6">
-      <svg>
-        
-      </svg>
+    <div class="row">
+      <div class="col-6">
+        <pre>
+          <code class="js">
+            console.log("hello");
+          </code>
+        </pre>
+      </div>
+      <div class="col-6">
+        <svg>
+          
+        </svg>
+      </div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
   <script src="https://d3js.org/d3.v4.js"></script>
+  <script src="functions.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
