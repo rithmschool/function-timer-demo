@@ -8,10 +8,10 @@ var padding = {
 
 document.addEventListener("DOMContentLoaded", function() {
   hljs.initHighlightingOnLoad();
-  var currentFn = addUpTo;
+  var currentFn = addUpToFirst;
   var data = [];
   var codeArea = document.querySelector(".js");
-  codeArea.innerText = addUpTo.toString();
+  codeArea.innerText = addUpToFirst.toString();
 
   width = document.querySelector(".col-6").offsetWidth - 30;
   height = width * 3 / 4;
