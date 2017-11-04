@@ -224,31 +224,37 @@ function handleClick() {
 }
 
 function handleXAdd() {
-  if (d3.event.metaKey) {
-    var newX = d3.select("svg").append("g")
-      .classed("circle-remove", true);
-    var stroke = currentCirc.attr("fill") === "#dc3545" ? "#343a40" : "#dc3545";
-    newX.append("line")
-      .attr("x1", +currentCirc.attr("cx") - hoverRadius)
-      .attr("x2", +currentCirc.attr("cx") + hoverRadius)
-      .attr("y1", +currentCirc.attr("cy") + hoverRadius)
-      .attr("y2", +currentCirc.attr("cy") - hoverRadius)
-      .attr("stroke", stroke)
-      .attr("stroke-width", hoverRadius / 3);
-    newX.append("line")
-      .attr("x1", +currentCirc.attr("cx") - hoverRadius)
-      .attr("x2", +currentCirc.attr("cx") + hoverRadius)
-      .attr("y1", +currentCirc.attr("cy") - hoverRadius)
-      .attr("y2", +currentCirc.attr("cy") + hoverRadius)
-      .attr("stroke", stroke)
-      .attr("stroke-width", hoverRadius / 3);
-    newX
-      .interrupt()
-      .transition(tHover)
-      .style("opacity", 1);
-  }
-  if (d3.event.shiftKey) {
-
+  var selection;
+  if (d3.event.metaKey) selection = currentCirc;
+  if (d3.event.shiftKey) selection = d3.selectAll(
+    `circle[fill="${currentCirc.attr('fill')}"]`
+  );
+  if (selection) {
+    selection.each(function(d, i) {
+      var circle = d3.select(this);
+      var newX = d3.select("svg").append("g")
+        .classed("circle-remove", true);
+      var stroke = circle.attr("fill") === "#dc3545" ? "#343a40" : "#dc3545";
+      newX.append("line")
+        .attr("x1", +circle.attr("cx") - hoverRadius)
+        .attr("x2", +circle.attr("cx") + hoverRadius)
+        .attr("y1", +circle.attr("cy") + hoverRadius)
+        .attr("y2", +circle.attr("cy") - hoverRadius)
+        .attr("stroke", stroke)
+        .attr("stroke-width", hoverRadius / 3);
+      newX.append("line")
+        .attr("x1", +circle.attr("cx") - hoverRadius)
+        .attr("x2", +circle.attr("cx") + hoverRadius)
+        .attr("y1", +circle.attr("cy") - hoverRadius)
+        .attr("y2", +circle.attr("cy") + hoverRadius)
+        .attr("stroke", stroke)
+        .attr("stroke-width", hoverRadius / 3);
+      newX
+        .interrupt()
+        .transition(tHover)
+        .delay(i * 50)
+        .style("opacity", 1);
+    });
   }
 }
 
