@@ -2,12 +2,12 @@ var currentFn = null;
 var currentCirc = null;
 var radius = 5;
 var hoverRadius = 8;
+var circleData = [];
 var tHover = d3.transition()
   .duration(500)
   .ease(d3.easeLinear);
 
 document.addEventListener("DOMContentLoaded", function() {
-  var circleData = [];
 
   hljs.initHighlightingOnLoad();
   setUpFunctions();
@@ -117,6 +117,7 @@ function setUpGraph() {
 }
 
 function updateGraph(svg, circleData, currentFn) {
+
   var width = +svg.attr("width");
   var height = +svg.attr("height");
   var padding = svg.datum().padding;
@@ -158,7 +159,11 @@ function updateGraph(svg, circleData, currentFn) {
   // update circles
   var circles = svg
     .selectAll("circle")
-    .data(circleData);
+    .data(circleData, d => `${d.x}-${d.y}-${d.color}`);
+
+  circles
+    .exit()
+    .remove();
 
   circles
     .transition(t)
@@ -182,6 +187,10 @@ function updateGraph(svg, circleData, currentFn) {
   var lines = svg
     .selectAll("path.line")
     .data(getLineData(circleData), d => d.key);
+
+  lines
+    .exit()
+    .remove();
 
   lines
     .enter()
@@ -220,7 +229,25 @@ function handleMouseOut(d) {
 }
 
 function handleClick() {
-
+  var selection;
+  if (d3.event.metaKey) selection = currentCirc;
+  if (d3.event.shiftKey) selection = d3.selectAll(
+    `circle[fill="${currentCirc.attr('fill')}"]`
+  );
+  if (selection) {
+    var data = selection.data();
+    data.forEach(d => {
+      var idx = circleData.findIndex(c => c === d);
+      circleData.splice(idx, 1);
+    });
+    updateGraph(
+      d3.select("svg"),
+      circleData,
+      currentFn
+    );
+  }
+  currentCirc = null;
+  handleXRemove();
 }
 
 function handleXAdd() {
@@ -252,7 +279,6 @@ function handleXAdd() {
       newX
         .interrupt()
         .transition(tHover)
-        .delay(i * 50)
         .style("opacity", 1);
     });
   }
@@ -261,16 +287,17 @@ function handleXAdd() {
 function handleXRemove() {
   var e = d3.event;
   var isMouseOut = e.type === "mouseout";
+  var isClick = e.type === "click";
   var metaOff = e.type === "keyup" && !e.metaKey;
   var shiftOff = e.type === "keyup" && !e.shiftKey;
-  if (isMouseOut || shiftOff) {
+  if (isMouseOut || isClick || shiftOff) {
     d3.selectAll(".circle-remove")
       .interrupt()
       .transition(tHover)
       .style("opacity", 0)
       .remove();
   }
-  if (!metaOff) handleXAdd();
+  if (!metaOff && !isClick) handleXAdd();
 }
 
 function getLineData(circleData) {
@@ -294,7 +321,3 @@ function createWorker(name, input) {
   worker.postMessage({ name: name, input: input});
   return worker;
 }
-
-// add tooltip to remove points or all function data
-  // separate out radius growth vs adding/removing x?
-  // need to fire on keypress and on mouse
