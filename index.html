@@ -7,33 +7,24 @@
   <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/solarized-light.min.css">
   <link rel="stylesheet" href="style.css">
+  <script src="https://use.fontawesome.com/f3a4c4be3a.js"></script>
 </head>
 <body>
   <div class="jumbotron text-center">
-    <h1 class="display-4">Performance Tracker</h1>
-    <p class="lead">Choose a function and start plotting!</p>
+    <h1 class="display-4">
+      Performance Tracker
+      <small class="lead">Choose a function and start plotting!</small>
+    </h1>
     <section class="buttons">
-      <div class="btn-area">
-        <button type="button" class="btn btn-primary">
-          <pre>addUpToFirst</pre>
-        </button>
-        <button type="button" class="btn btn-primary">
-          <pre>TODO</pre>
-        </button>
-        <button type="button" class="btn btn-primary">
-          <pre>TODO</pre>
-        </button>
-        <button type="button" class="btn btn-primary">
-          <pre>TODO</pre>
-        </button>
-        <button type="button" class="btn btn-primary">
-          <pre>TODO</pre>
-        </button>
-      </div>
+      <div class="btn-area"></div>
       <div class="plot-area">
         <form id="plot">
           <input type="number" name="fn_input" class="form-control" placeholder="n = ...">
-          <button type="submit" id="plot" class="btn btn-dark">Plot!</button>
+          <button type="submit" class="btn btn-dark">Plot!</button>
+          <div class="calculating hidden">
+            <i class="fa fa-cog fa-spin fa-2x fa-fw text-dark"></i>
+            <small>Calculating...</small>
+          </div>
         </form>
       </div>
     </section>
@@ -42,15 +33,11 @@
     <div class="row">
       <div class="col-6">
         <pre>
-          <code class="js">
-            console.log("hello");
-          </code>
+          <code class="js"></code>
         </pre>
       </div>
       <div class="col-6">
-        <svg>
-          
-        </svg>
+        <svg></svg>
       </div>
     </div>
   </div>

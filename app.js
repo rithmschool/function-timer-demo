@@ -1,25 +1,71 @@
-var width, height;
-var padding = {
-  top: 10,
-  right: 10,
-  bottom: 40,
-  left: 60
-};
+var currentFn = null;
 
 document.addEventListener("DOMContentLoaded", function() {
   hljs.initHighlightingOnLoad();
-  var currentFn = addUpToFirst;
+
   var data = [];
-  var codeArea = document.querySelector(".js");
-  codeArea.innerText = addUpToFirst.toString();
 
-  width = document.querySelector(".col-6").offsetWidth - 30;
-  height = width * 3 / 4;
+  setUpFunctions();
+  d3.select(".btn-primary").dispatch("click");
+  setUpGraph();
 
-  // set up SVG and axes
+  // add event handler
+  d3.select("#plot")
+    .on("submit", function() {
+      d3.event.preventDefault();
+      var button = d3.select("#plot > button");
+      var calculating = d3.select(".calculating");
+      if (!button.classed("disabled")) {
+        button.classed("disabled", true);
+        calculating.classed("hidden", false);
+        var value = +d3.event.target.fn_input.value;
+        var worker = createWorker(currentFn.fn.name, value);
+        worker.onmessage = function(event) {
+          button.classed("disabled", false);
+          calculating.classed("hidden", true);
+          data.push({
+            x: value,
+            y: event.data.time,
+            name: currentFn.fn.name
+          });
+          updateGraph(d3.select("svg"), data, currentFn);
+        };
+      }
+    });
+});
+
+function setUpFunctions() {
+  d3.select(".btn-area")
+    .selectAll("button")
+    .data(functions)
+    .enter()
+    .append("button")
+      .attr("type", "button")
+      .attr("class", d => `btn btn-${d.className}`)
+      .html(d => `<pre>${d.fn.name}</pre>`)
+      .on("click", setCurrentFunction);
+}
+
+function setCurrentFunction(d) {
+  currentFn = d;
+  var codeBlock = d3.select(".js").text(d.fn.toString());
+  hljs.highlightBlock(codeBlock.node());
+}
+
+function setUpGraph() {
+  var width = document.querySelector(".col-6").offsetWidth - 30;
+  var height = width * 3 / 4;
+  var padding = {
+    top: 10,
+    right: 10,
+    bottom: 40,
+    left: 60
+  };
+
   var svg = d3.select("svg")
     .attr("width", width)
-    .attr("height", height);
+    .attr("height", height)
+    .datum({ padding: padding });
 
   svg
     .append("g")
@@ -45,28 +91,12 @@ document.addEventListener("DOMContentLoaded", function() {
     .attr("y", 15)
     .text("Time Elapsed (seconds)");
 
-  // add event handler
-  d3.select("#plot")
-    .on("submit", function() {
-      d3.event.preventDefault();
-      var value = +d3.event.target.fn_input.value;
-      data.push({
-        x: value,
-        y: time(currentFn, value),
-        name: currentFn.name
-      });
-      updateGraph(svg, data);
-    });
-});
-
-function time(fn, input) {
-  var t1 = performance.now();
-  fn(input);
-  var t2 = performance.now();
-  return t2 - t1;
 }
 
-function updateGraph(svg, data) {
+function updateGraph(svg, data, currentFn) {
+  var width = +svg.attr("width");
+  var height = +svg.attr("height");
+  var padding = svg.datum().padding;
 
   var xScale = d3.scaleLinear()
     .domain(d3.extent(data, d => d.x))
@@ -97,9 +127,21 @@ function updateGraph(svg, data) {
   circles
     .enter()
     .append("circle")
-      .attr("r", d => 5)
+      .attr("r", 5)
+      .attr("fill", currentFn.fill)
     .merge(circles)
       .attr("cx", d => xScale(d.x))
       .attr("cy", d => yScale(d.y / 1000));
 
 }
+
+function createWorker(fn, input) {
+  var worker = new Worker("worker.js");
+  worker.postMessage({ fn: fn, input: input});
+  return worker;
+}
+
+// add trend lines (including averages)
+// add tooltip to remove points or all function data
+// add transitions
+// re-style gridlines

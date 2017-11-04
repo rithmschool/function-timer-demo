@@ -3,21 +3,34 @@
   margin-bottom: 0;
 }
 
+.btn-area {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
 .btn > pre {
   margin: 0;
   color: #fff;
 }
 
+.btn:hover {
+  cursor: pointer;
+}
+
 section.buttons {
   display: flex;
-  width: 75%;
+  width: 100%;
   margin: 0 auto;
   justify-content: space-around;
+  flex-direction: column;
 }
 
 .plot-area {
   display: flex;
   justify-content: center;
+  width: 75%;
+  margin: 1rem auto 0;
 }
 
 .plot-area .form-control {
@@ -29,7 +42,28 @@ section.buttons {
   margin: 0 1rem;
 }
 
+#plot {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.calculating {
+  position: absolute;
+  right: -6.7rem;
+  display: flex;
+  align-items: center;
+}
+
+.calculating small {
+  font-style: italic;
+}
+
 .label {
   text-anchor: middle;
   font-style: italic;
+}
+
+.hidden {
+  display: none;
 }

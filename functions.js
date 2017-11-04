@@ -14,19 +14,14 @@ function addUpToSecond(n) {
 
 // Other O(n)
 function countUpAndDown(n) {
-
   console.log("Going up!");
-
   for (var i = 0; i < n; i++) {
     console.log(i);
   }
-
   console.log("At the top!\nGoing down...");
-
   for (var j = n - 1; j >= 0; j--) {
     console.log(j);
   }
-
   console.log("Back down. Bye!");
 }
 
@@ -69,12 +64,40 @@ function logAllBinaries(n) {
   console.log(lastNum);
 }
 
-var functions = {
-  addUpToFirst: addUpToFirst,
-  addUpToSecond: addUpToSecond,
-  countUpAndDown: countUpAndDown,
-  printAllPairs: printAllPairs,
-  numberOfHalves: numberOfHalves,
-  totalNumberOfHalves: totalNumberOfHalves,
-  logAllBinaries: logAllBinaries
-};
+var functions = [
+  { 
+    fn: addUpToFirst,
+    className: "primary",
+    fill: "#007bff"
+  },
+  { 
+    fn: addUpToSecond,
+    className: "secondary",
+    fill: "#868e96"
+  },
+  { 
+    fn: countUpAndDown,
+    className: "success",
+    fill: "#28a745"
+  },
+  { 
+    fn: printAllPairs,
+    className: "danger",
+    fill: "#dc3545"
+  },
+  { 
+    fn: numberOfHalves,
+    className: "warning",
+    fill: "#ffc107"
+  },
+  { 
+    fn: totalNumberOfHalves,
+    className: "info",
+    fill: "#17a2b8"
+  },
+  { 
+    fn: logAllBinaries,
+    className: "dark",
+    fill: "#343a40"
+  }
+];
