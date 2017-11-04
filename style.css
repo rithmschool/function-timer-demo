@@ -73,3 +73,7 @@ section.buttons {
   stroke-dasharray: 10, 5;
   shape-rendering: crispEdges;
 }
+
+path.line {
+  fill: none;
+}

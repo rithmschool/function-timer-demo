@@ -1,15 +1,13 @@
 var currentFn = null;
 
 document.addEventListener("DOMContentLoaded", function() {
+  var circleData = [];
+
   hljs.initHighlightingOnLoad();
-
-  var data = [];
-
   setUpFunctions();
   d3.select(".btn-primary").dispatch("click");
   setUpGraph();
 
-  // add event handler
   d3.select("#plot")
     .on("submit", function() {
       d3.event.preventDefault();
@@ -23,12 +21,19 @@ document.addEventListener("DOMContentLoaded", function() {
         worker.onmessage = function(event) {
           button.classed("disabled", false);
           calculating.classed("hidden", true);
-          data.push({
+
+          circleData.push({
             x: value,
             y: event.data.time,
-            name: currentFn.fn.name
+            color: event.data.color
           });
-          updateGraph(d3.select("svg"), data, currentFn);
+
+          updateGraph(
+            d3.select("svg"),
+            circleData,
+            currentFn
+          );
+
         };
       }
     });
@@ -93,19 +98,20 @@ function setUpGraph() {
 
 }
 
-function updateGraph(svg, data, currentFn) {
+function updateGraph(svg, circleData, currentFn) {
   var width = +svg.attr("width");
   var height = +svg.attr("height");
   var padding = svg.datum().padding;
 
   var xScale = d3.scaleLinear()
-    .domain(d3.extent(data, d => d.x))
+    .domain(d3.extent(circleData, d => d.x))
     .range([padding.left, width - padding.right]);
 
   var yScale = d3.scaleLinear()
-    .domain(d3.extent(data, d => d.y / 1000))
+    .domain(d3.extent(circleData, d => d.y / 1000))
     .range([height - padding.bottom, padding.top]);
 
+  // update axes
   svg
     .select(".x-axis")
     .call(
@@ -124,19 +130,53 @@ function updateGraph(svg, data, currentFn) {
         .tickSizeOuter(0)
     );
 
+  // update circles
   var circles = svg
     .selectAll("circle")
-    .data(data);
+    .data(circleData);
 
   circles
     .enter()
     .append("circle")
       .attr("r", 5)
-      .attr("fill", currentFn.fill)
+      .attr("fill", d => d.color)
     .merge(circles)
       .attr("cx", d => xScale(d.x))
       .attr("cy", d => yScale(d.y / 1000));
 
+  // update lines
+  var lines = svg
+    .selectAll("path.line")
+    .data(getLineData(circleData), d => d.key);
+
+  lines
+    .enter()
+    .append("path")
+      .classed("line", true)
+      .attr("stroke", d => d.key)
+    .merge(lines)
+      .attr("d", d => d3
+        .line()
+        .x(d => xScale(d.x))
+        .y(d => yScale(d.y / 1000))
+        (d.value.sort((d1, d2) => d1.x - d2.x))
+      );
+}
+
+function getLineData(circleData) {
+  return d3.nest()
+    .key(d => d.color)
+    .rollup(points => (
+      points.reduce((avgs, pt) => {
+        var cur = avgs.find(d => d.x === pt.x);
+        if (!cur) avgs.push({
+          x: pt.x,
+          y: d3.mean(points, d => d.x === pt.x ? d.y : undefined)
+        });
+        return avgs;
+      }, [])
+    ))
+    .entries(circleData);
 }
 
 function createWorker(name, input) {
@@ -145,6 +185,5 @@ function createWorker(name, input) {
   return worker;
 }
 
-// add trend lines (including averages)
 // add tooltip to remove points or all function data
 // add transitions

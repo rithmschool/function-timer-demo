@@ -68,36 +68,36 @@ var functions = [
   { 
     fn: addUpToFirst,
     className: "primary",
-    fill: "#007bff"
+    color: "#007bff"
   },
   { 
     fn: addUpToSecond,
     className: "secondary",
-    fill: "#868e96"
+    color: "#868e96"
   },
   { 
     fn: countUpAndDown,
     className: "success",
-    fill: "#28a745"
+    color: "#28a745"
   },
   { 
     fn: printAllPairs,
     className: "danger",
-    fill: "#dc3545"
+    color: "#dc3545"
   },
   { 
     fn: numberOfHalves,
     className: "warning",
-    fill: "#ffc107"
+    color: "#ffc107"
   },
   { 
     fn: totalNumberOfHalves,
     className: "info",
-    fill: "#17a2b8"
+    color: "#17a2b8"
   },
   { 
     fn: logAllBinaries,
     className: "dark",
-    fill: "#343a40"
+    color: "#343a40"
   }
 ];
