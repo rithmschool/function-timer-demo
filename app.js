@@ -1,4 +1,10 @@
 var currentFn = null;
+var currentCirc = null;
+var radius = 5;
+var hoverRadius = 8;
+var tHover = d3.transition()
+  .duration(500)
+  .ease(d3.easeLinear);
 
 document.addEventListener("DOMContentLoaded", function() {
   var circleData = [];
@@ -36,6 +42,18 @@ document.addEventListener("DOMContentLoaded", function() {
 
         };
       }
+    });
+
+  d3.select("body")
+    .on("keydown", function() {
+      if (currentCirc) {
+        handleXAdd();
+      }
+    });
+
+  d3.select("body")
+    .on("keyup", function() {
+      handleXRemove();
     });
 });
 
@@ -154,8 +172,11 @@ function updateGraph(svg, circleData, currentFn) {
       .attr("r", 0)
       .attr("cx", d => xScale(d.x))
       .attr("cy", d => yScale(d.y / 1000))
+      .on("mousemove", handleHover)
+      .on("mouseout", handleMouseOut)
+      .on("click", handleClick)
     .transition(tNew)
-      .attr("r", 5);
+      .attr("r", radius);
 
   // update lines
   var lines = svg
@@ -175,6 +196,75 @@ function updateGraph(svg, circleData, currentFn) {
         .y(d => yScale(d.y / 1000))
         (d.value.sort((d1, d2) => d1.x - d2.x))
       );
+
+}
+
+function handleHover(d) {
+  currentCirc = d3.select(this);
+  currentCirc
+    .interrupt()
+    .transition(tHover)
+    .attr("r", hoverRadius);
+
+  handleXAdd();
+}
+
+function handleMouseOut(d) {
+  currentCirc = null;
+  d3.selectAll("circle")
+    .interrupt()
+    .transition(tHover)
+    .attr("r", radius);
+
+  handleXRemove();
+}
+
+function handleClick() {
+
+}
+
+function handleXAdd() {
+  if (d3.event.metaKey) {
+    var newX = d3.select("svg").append("g")
+      .classed("circle-remove", true);
+    var stroke = currentCirc.attr("fill") === "#dc3545" ? "#343a40" : "#dc3545";
+    newX.append("line")
+      .attr("x1", +currentCirc.attr("cx") - hoverRadius)
+      .attr("x2", +currentCirc.attr("cx") + hoverRadius)
+      .attr("y1", +currentCirc.attr("cy") + hoverRadius)
+      .attr("y2", +currentCirc.attr("cy") - hoverRadius)
+      .attr("stroke", stroke)
+      .attr("stroke-width", hoverRadius / 3);
+    newX.append("line")
+      .attr("x1", +currentCirc.attr("cx") - hoverRadius)
+      .attr("x2", +currentCirc.attr("cx") + hoverRadius)
+      .attr("y1", +currentCirc.attr("cy") - hoverRadius)
+      .attr("y2", +currentCirc.attr("cy") + hoverRadius)
+      .attr("stroke", stroke)
+      .attr("stroke-width", hoverRadius / 3);
+    newX
+      .interrupt()
+      .transition(tHover)
+      .style("opacity", 1);
+  }
+  if (d3.event.shiftKey) {
+
+  }
+}
+
+function handleXRemove() {
+  var e = d3.event;
+  var isMouseOut = e.type === "mouseout";
+  var metaOff = e.type === "keyup" && !e.metaKey;
+  var shiftOff = e.type === "keyup" && !e.shiftKey;
+  if (isMouseOut || shiftOff) {
+    d3.selectAll(".circle-remove")
+      .interrupt()
+      .transition(tHover)
+      .style("opacity", 0)
+      .remove();
+  }
+  if (!metaOff) handleXAdd();
 }
 
 function getLineData(circleData) {
@@ -200,3 +290,5 @@ function createWorker(name, input) {
 }
 
 // add tooltip to remove points or all function data
+  // separate out radius growth vs adding/removing x?
+  // need to fire on keypress and on mouse

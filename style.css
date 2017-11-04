@@ -77,3 +77,12 @@ section.buttons {
 path.line {
   fill: none;
 }
+
+svg + small {
+  font-style: italic;
+}
+
+.circle-remove {
+  pointer-events: none;
+  opacity: 0;
+}
