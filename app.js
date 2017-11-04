@@ -102,6 +102,11 @@ function updateGraph(svg, circleData, currentFn) {
   var width = +svg.attr("width");
   var height = +svg.attr("height");
   var padding = svg.datum().padding;
+  var t = d3.transition().duration(1000);
+  var tNew = d3.transition()
+    .delay(500)
+    .duration(1000)
+    .ease(d3.easeElasticOut);
 
   var xScale = d3.scaleLinear()
     .domain(d3.extent(circleData, d => d.x))
@@ -114,6 +119,7 @@ function updateGraph(svg, circleData, currentFn) {
   // update axes
   svg
     .select(".x-axis")
+    .transition(t)
     .call(
       d3.axisBottom(xScale)
         .tickFormat(d3.format(".2s"))
@@ -123,6 +129,7 @@ function updateGraph(svg, circleData, currentFn) {
 
   svg
     .select(".y-axis")
+    .transition(t)
     .call(
       d3.axisLeft(yScale)
         .tickFormat(d3.format(".2s"))
@@ -136,13 +143,19 @@ function updateGraph(svg, circleData, currentFn) {
     .data(circleData);
 
   circles
+    .transition(t)
+    .attr("cx", d => xScale(d.x))
+    .attr("cy", d => yScale(d.y / 1000));
+
+  circles
     .enter()
     .append("circle")
-      .attr("r", 5)
       .attr("fill", d => d.color)
-    .merge(circles)
+      .attr("r", 0)
       .attr("cx", d => xScale(d.x))
-      .attr("cy", d => yScale(d.y / 1000));
+      .attr("cy", d => yScale(d.y / 1000))
+    .transition(tNew)
+      .attr("r", 5);
 
   // update lines
   var lines = svg
@@ -155,6 +168,7 @@ function updateGraph(svg, circleData, currentFn) {
       .classed("line", true)
       .attr("stroke", d => d.key)
     .merge(lines)
+      .transition(t)
       .attr("d", d => d3
         .line()
         .x(d => xScale(d.x))
@@ -186,4 +200,3 @@ function createWorker(name, input) {
 }
 
 // add tooltip to remove points or all function data
-// add transitions
