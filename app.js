@@ -111,6 +111,8 @@ function updateGraph(svg, data, currentFn) {
     .call(
       d3.axisBottom(xScale)
         .tickFormat(d3.format(".2s"))
+        .tickSize(-height + padding.top + padding.bottom)
+        .tickSizeOuter(0)
     );
 
   svg
@@ -118,6 +120,8 @@ function updateGraph(svg, data, currentFn) {
     .call(
       d3.axisLeft(yScale)
         .tickFormat(d3.format(".2s"))
+        .tickSize(-width + padding.left + padding.right)
+        .tickSizeOuter(0)
     );
 
   var circles = svg
@@ -135,13 +139,12 @@ function updateGraph(svg, data, currentFn) {
 
 }
 
-function createWorker(fn, input) {
+function createWorker(name, input) {
   var worker = new Worker("worker.js");
-  worker.postMessage({ fn: fn, input: input});
+  worker.postMessage({ name: name, input: input});
   return worker;
 }
 
 // add trend lines (including averages)
 // add tooltip to remove points or all function data
 // add transitions
-// re-style gridlines

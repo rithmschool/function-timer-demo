@@ -67,3 +67,9 @@ section.buttons {
 .hidden {
   display: none;
 }
+
+.tick line {
+  stroke: #ccc;
+  stroke-dasharray: 10, 5;
+  shape-rendering: crispEdges;
+}
