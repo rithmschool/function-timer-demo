@@ -1,7 +1,7 @@
 // O(n)
 function addUpToFirst(n) {
   var total = 0;
-  for (var i = 0; i < n; i++) {
+  for (var i = 0; i <= n; i++) {
     total += i;
   }
   return total;
@@ -9,7 +9,7 @@ function addUpToFirst(n) {
 
 // O(1)
 function addUpToSecond(n) {
-  return n * (n - 1) / 2;
+  return n * (n + 1) / 2;
 }
 
 // Other O(n)
