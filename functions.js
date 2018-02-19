@@ -1,15 +1,25 @@
-// O(n)
-function addUpToFirst(n) {
-  var total = 0;
-  for (var i = 0; i <= n; i++) {
-    total += i;
+// O(n^2)
+function pairCountFirst(n) {
+  var count = 0;
+  for (var i = 1; i <= n; i++) {
+    for (var j = i + 1; j <= n; j++) {
+      count++;
+    }
   }
-  return total;
+  return count;
 }
 
-// O(1)
-function addUpToSecond(n) {
-  return n * (n + 1) / 2;
+// O(n)
+function pairCountSecond(n) {
+  var count = 0;
+  for (var i = 1; i <= n; i++) {
+    count += n - 1;
+  }
+  return count / 2;
+}
+
+function pairCountThird(n) {
+  return n * (n - 1) / 2;
 }
 
 // Other O(n)
@@ -26,10 +36,10 @@ function countUpAndDown(n) {
 }
 
 // O(n^2)
-function printAllPairs(n) {
+function multiplicationTable(n) {
   for (var i = 0; i < n; i++) {
     for (var j = 0; j < n; j++) {
-      console.log(i, j);
+      console.log(i + " * " + j + " = " + i * j + ".");
     }
   }
 }
@@ -65,39 +75,36 @@ function logAllBinaries(n) {
 }
 
 var functions = [
-  { 
-    fn: addUpToFirst,
-    className: "primary",
+  {
+    fn: pairCountFirst,
     color: "#007bff"
   },
-  { 
-    fn: addUpToSecond,
-    className: "secondary",
+  {
+    fn: pairCountSecond,
+    color: "#8426b8"
+  },
+  {
+    fn: pairCountThird,
     color: "#868e96"
   },
-  { 
+  {
     fn: countUpAndDown,
-    className: "success",
     color: "#28a745"
   },
-  { 
-    fn: printAllPairs,
-    className: "danger",
+  {
+    fn: multiplicationTable,
     color: "#dc3545"
   },
-  { 
+  {
     fn: numberOfHalves,
-    className: "warning",
     color: "#ffc107"
   },
-  { 
+  {
     fn: totalNumberOfHalves,
-    className: "info",
     color: "#17a2b8"
   },
-  { 
+  {
     fn: logAllBinaries,
-    className: "dark",
     color: "#343a40"
   }
 ];
